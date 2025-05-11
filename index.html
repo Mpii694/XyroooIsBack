@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danzz Jawascript</title>
+  <style>
+    :root {
+      --primary: #00f5ff;
+      --bg: #0f0f2e;
+      --btn-bg: #1f1fff;
+      --btn-border: #4a4aff;
+      --text-light: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .container {
+      padding: 24px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      text-shadow: 0 0 8px var(--primary);
+      animation: glow 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 8px var(--primary), 0 0 16px var(--primary); }
+      100% { text-shadow: 0 0 16px var(--primary), 0 0 32px var(--primary); }
+    }
+
+    .row-with-clock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      background: var(--primary);
+      color: #000;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    .owner-button {
+      background: #25d366;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 20px;
+      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 0 8px #25d366;
+      transition: all 0.3s ease;
+      display: inline-block;
+      margin-top: 16px;
+    }
+
+    .owner-button:hover {
+      background: #1ebe5d;
+      box-shadow: 0 0 12px #1ebe5d;
+    }
+
+    .clock {
+      color: #fff;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+    }
+
+    .desc-box {
+      background: #1a1a3d;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-top: 12px;
+      box-shadow: 0 0 10px #00f5ff;
+      font-size: 15px;
+      display: none;
+      max-height: 150px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+
+    .audio-player-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .audio-player-container audio {
+      width: 100%;
+      max-width: 300px;
+      background: #1a1a3d;
+      border-radius: 12px;
+      box-shadow: 0 0 8px #00f5ff;
+      padding: 6px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #1a1a3d;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 20px 0;
+    }
+
+    .search-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 16px;
+      padding-left: 10px;
+      outline: none;
+    }
+
+    .buttons-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding: 12px 0;
+    }
+
+    .tombol {
+      background: var(--btn-bg);
+      color: var(--text-light);
+      padding: 12px 20px;
+      border: 1.5px solid var(--btn-border);
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 0 5px var(--btn-border);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .command-container {
+      margin-top: 30px;
+    }
+
+    .get-input {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .get-input input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      background: #1a1a3d;
+      color: var(--primary);
+      outline: none;
+    }
+
+    .get-button, .copy-external {
+      background: #465aff;
+      color: #fff;
+      padding: 12px 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 0 6px #465aff;
+      cursor: pointer;
+    }
+
+    .copy-external {
+      margin-top: 16px;
+      display: none;
+    }
+
+    .code-box {
+      background-color: #0c1426;
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 24px;
+      overflow: auto;
+      color: white;
+      font-family: monospace;
+      box-shadow: 0 0 10px #000;
+      display: none;
+      transform: scale(0.9);
+      opacity: 0;
+    }
+
+    .fadeIn {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .fadeOut {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
+    .command-hidden {
+      display: none !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.95); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DANZZ JAWASCRIPT</h1>
+
+    <div class="row-with-clock">
+      <button id="description-btn" class="description">description</button>
+      <span id="clock" class="clock"></span>
+    </div>
+
+    <div id="description-text" class="desc-box">
+      AYO IKUTIN SALURAN DANZ NIH UNTUK MELIHAT UPDATE<br>
+      <a href="https://whatsapp.com/channel/0029Vb9ltdiEAKW7EHwjLX3s" target="_blank" style="color: #00f5ff;">https://whatsapp.com/channel/0029Vb9ltdiEAKW7EHwjLX3s</a><br><br>
+      REQ APA GITU KALAU ADA IDE
+    </div>
+
+    <a href="https://wa.me/6285807428724" target="_blank" class="owner-button">Owner</a>
+
+    <div class="audio-player-container">
+      <audio controls>
+        <source src="https://files.catbox.moe/r1k9by.mp3" type="audio/mpeg">
+        Browser kamu tidak mendukung audio.
+      </audio>
+    </div>
+
+    <div class="search-box">
+      <span style="font-size: 20px; color: #fff;">&#128269;</span>
+      <input id="search-input" type="text" placeholder="cari nama fitur..." />
+    </div>
+
+    <div class="buttons-scroll">
+      <div class="tombol">code</div>
+    </div>
+
+    <!-- Command Container - SETPPPANJANG -->
+    <div class="command-container" data-command="setpppanjang">
+      <div class="get-input">
+        <input type="text" value="SETPPPANJANG" readonly />
+        <button class="get-button">get</button>
+      </div>
+      <button class="copy-external" onclick="copyCode(this)">copy</button>
+      <div class="code-box">
+        <pre>case 'setpppanjang': {
+  if (!isCreator) return reply('❌ Lu bukan owner, gabisa pake perintah ini!');
+
+  let q = m.quoted ? m.quoted : m;
+  let mime = (q.msg || q).mimetype || '';
+
+  if (!/image/.test(mime)) return reply('❌ Kirim atau reply gambar buat dijadiin foto profil!');
+
+  reply('⏳ Lagi update foto profil...');
+
+  try {
+    let media = await q.download();
+    await Danzz.updateProfilePicture(Danzz.user.id, media);
+    reply('✅ Berhasil update foto profil!');
+  } catch (err) {
+    console.error(err);
+    reply('❌ Gagal update foto profil, coba lagi nanti!');
+  }
+}
+break;</pre>
+      </div>
+    </div>
+
+    <!-- Command Container - EXAMPLE1 -->
+    <div class="command-container" data-command="example1">
+      <div class="get-input">
+        <input type="text" value="test 1" readonly />
+        <button class="get-button">get</button>
+      </div>
+      <button class="copy-external" onclick="copyCode(this)">copy</button>
+      <div class="code-box">
+        <pre>cuma test aja hehe</pre>
+      </div>
+    </div>
+
+    <!-- Command Container - EXAMPLE2 -->
+    <div class="command-container" data-command="example2">
+      <div class="get-input">
+        <input type="text" value="test 2" readonly />
+        <button class="get-button">get</button>
+      </div>
+      <button class="copy-external" onclick="copyCode(this)">copy</button>
+      <div class="code-box">
+        <pre>hai gw Xyroo🗿</pre>
+      </div>
+    </div>
+
+    <!-- Add more command containers as needed -->
+    
+  </div>
+
+  <script>
+    // Jam real-time
+    function updateClock() {
+      const now = new Date();
+      const jam = now.getHours().toString().padStart(2, '0');
+      const menit = now.getMinutes().toString().padStart(2, '0');
+      const detik = now.getSeconds().toString().padStart(2, '0');
+      const waktu = `${jam}:${menit}:${detik}`;
+      document.getElementById('clock').textContent = waktu;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Toggle Description
+    const descBtn = document.getElementById('description-btn');
+    const descText = document.getElementById('description-text');
+    let descVisible = false;
+
+    descBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!descVisible) {
+        descText.classList.remove('fadeOut');
+        descText.classList.add('fadeIn');
+        descText.style.display = 'block';
+        descVisible = true;
+      } else {
+        descText.classList.remove('fadeIn');
+        descText.classList.add('fadeOut');
+        setTimeout(() => {
+          descText.style.display = 'none';
+        }, 300);
+        descVisible = false;
+      }
+    });
+
+    descText.addEventListener('click', e => e.stopPropagation());
+
+    // Copy Code Function
+    function copyCode(button) {
+      const container = button.closest('.command-container');
+      const codeContent = container.querySelector('.code-box pre').textContent;
+      
+      navigator.clipboard.writeText(codeContent)
+        .then(() => {
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+          button.textContent = 'Failed!';
+          setTimeout(() => {
+            button.textContent = 'copy';
+          }, 2000);
+          
+          // Fallback for browsers that don't support Clipboard API
+          const textarea = document.createElement('textarea');
+          textarea.value = codeContent;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          button.textContent = 'Copied!';
+          setTimeout(() => {
+            button.textContent = 'copy';
+          }, 2000);
+        });
+    }
+
+    // Search Functionality
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.trim().toLowerCase();
+      const commandContainers = document.querySelectorAll('.command-container');
+      
+      if (searchTerm === '') {
+        // Jika search kosong, tampilkan semua
+        commandContainers.forEach(container => {
+          container.classList.remove('command-hidden');
+        });
+        return;
+      }
+      
+      commandContainers.forEach(container => {
+        const commandName = container.getAttribute('data-command').toLowerCase();
+        const displayName = container.querySelector('.get-input input').value.toLowerCase();
+        
+        if (commandName.includes(searchTerm) || displayName.includes(searchTerm)) {
+          container.classList.remove('command-hidden');
+        } else {
+          container.classList.add('command-hidden');
+        }
+      });
+    });
+
+    // Initialize all command containers
+    document.addEventListener('DOMContentLoaded', function() {
+      const commandContainers = document.querySelectorAll('.command-container');
+      
+      commandContainers.forEach(container => {
+        const getBtn = container.querySelector('.get-button');
+        const codeBox = container.querySelector('.code-box');
+        const copyBtn = container.querySelector('.copy-external');
+        let codeVisible = false;
+
+        getBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          
+          // Close all other open code boxes first
+          document.querySelectorAll('.code-box').forEach(box => {
+            if (box !== codeBox && box.style.display === 'block') {
+              box.classList.remove('fadeIn');
+              box.classList.add('fadeOut');
+              setTimeout(() => {
+                box.style.display = 'none';
+              }, 300);
+            }
+          });
+          document.querySelectorAll('.copy-external').forEach(btn => {
+            if (btn !== copyBtn && btn.style.display === 'inline-block') {
+              btn.style.display = 'none';
+            }
+          });
+          
+          if (!codeVisible) {
+            codeBox.classList.remove('fadeOut');
+            codeBox.classList.add('fadeIn');
+            codeBox.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+            codeVisible = true;
+          } else {
+            codeBox.classList.remove('fadeIn');
+            codeBox.classList.add('fadeOut');
+            copyBtn.style.display = 'none';
+            setTimeout(() => {
+              codeBox.style.display = 'none';
+            }, 300);
+            codeVisible = false;
+          }
+        });
+
+        // Close when clicking outside
+        document.body.addEventListener('click', function() {
+          if (codeVisible) {
+            codeBox.classList.remove('fadeIn');
+            codeBox.classList.add('fadeOut');
+            copyBtn.style.display = 'none';
+            setTimeout(() => {
+              codeBox.style.display = 'none';
+            }, 300);
+            codeVisible = false;
+          }
+        });
+
+        codeBox.addEventListener('click', e => e.stopPropagation());
+      });
+    });
+  </script>
+</body>
+  </html>
